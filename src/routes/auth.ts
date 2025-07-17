@@ -14,4 +14,13 @@ export default (app: Application) => {
   router.post('/login', validate(authValidation.loginSchema), authController.login)
 
   router.get('/me', authMiddleware.isAuthorized, authController.getDetailUser)
+
+  router.put(
+    '/me',
+    authMiddleware.isAuthorized,
+    validate(authValidation.updateProfileSchema),
+    authController.updateProfile
+  )
+
+  router.post('/logout', authMiddleware.isAuthorized, authController.logout)
 }

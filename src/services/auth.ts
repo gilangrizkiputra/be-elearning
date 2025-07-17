@@ -51,3 +51,14 @@ export async function verifyTokenAndUser(token: string) {
   if (!user) throw new HttpError(401, 'User tidak ditemukan')
   return user
 }
+
+export async function updateProfile(id: string, data: { name?: string; image?: string }) {
+  const user = await authRepository.updateUserProfile(id, data)
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    image: user.image,
+  }
+}

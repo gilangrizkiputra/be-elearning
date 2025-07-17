@@ -30,3 +30,13 @@ export async function isAdmin(_req: Request, res: Response, next: NextFunction) 
 
   next()
 }
+
+export async function isTeacherOrAdmin(_req: Request, res: Response, next: NextFunction) {
+  const user = res.locals.user
+
+  if (!user || (user.role !== 'teacher' && user.role !== 'admin')) {
+    throw new HttpError(403, 'Hanya teacher atau admin yang bisa mengakses fitur ini')
+  }
+
+  next()
+}

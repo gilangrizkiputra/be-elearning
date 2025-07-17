@@ -16,3 +16,10 @@ export function createUser(data: {
 export function findUserById(id: string) {
   return prisma.user.findUnique({ where: { id } })
 }
+
+export function updateUserProfile(id: string, data: { name?: string; image?: string }) {
+  return prisma.user.update({
+    where: { id },
+    data,
+  })
+}

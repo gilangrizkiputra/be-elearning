@@ -14,7 +14,7 @@ export async function login(req: Request, res: Response, _next: NextFunction) {
   const { email, password } = req.body
   const result = await authService.loginUser(email, password)
   res.json({
-    message: 'login success',
+    message: 'Success login',
     data: result,
   })
 }
@@ -30,4 +30,20 @@ export async function getDetailUser(_req: Request, res: Response, _next: NextFun
       image: user.image,
     },
   })
+}
+
+export async function updateProfile(req: Request, res: Response, _next: NextFunction) {
+  const user = res.locals.user
+  const { name, image } = req.body
+
+  const updated = await authService.updateProfile(user.id, { name, image })
+
+  res.json({
+    message: 'Success update profile',
+    data: updated,
+  })
+}
+
+export async function logout(_req: Request, res: Response, _next: NextFunction) {
+  res.json({ message: 'Success logout' })
 }
