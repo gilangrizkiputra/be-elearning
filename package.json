@@ -19,12 +19,18 @@
     "db:drop": "dotenv -e .env.local -- cross-env-shell \"echo DROP DATABASE IF EXISTS $DATABASE_TO_DROP\" | dotenv -e .env.local -- prisma db execute --stdin",
     "db:create": "dotenv -e .env.local -- cross-env-shell \"echo CREATE DATABASE $DATABASE_TO_CREATE\" | dotenv -e .env.local -- prisma db execute --stdin --schema=./src/utils/prisma/schema.prisma",
     "db:seed": "dotenv -e .env.local -- prisma db seed",
-    "db:reset": "dotenv -e .env.local -- prisma migrate reset --force",
+    "db:reset": "dotenv -e .env.local -- prisma migrate reset --force --schema=src/utils/prisma/schema.prisma",
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev --schema=src/utils/prisma/schema.prisma",
     "db:migrate:create-only": "dotenv -e .env.local -- prisma migrate dev --create-only --schema=src/utils/prisma/schema.prisma",
     "db:push": "dotenv -e .env.local -- prisma db push --schema=src/utils/prisma/schema.prisma",
     "db:studio": "dotenv -e .env.local -- prisma studio --schema=src/utils/prisma/schema.prisma",
     "db:generate": "dotenv -e .env.local -- prisma generate --schema=src/utils/prisma/schema.prisma"
+  },
+  "prisma": {
+    "seed": "node --loader ts-node/esm src/utils/prisma/seed.ts"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "keywords": [],
   "author": "",

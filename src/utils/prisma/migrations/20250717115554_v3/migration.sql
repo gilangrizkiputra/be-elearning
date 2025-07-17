@@ -1,15 +1,5 @@
-/*
-  Warnings:
-
-  - The primary key for the `User` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - You are about to drop the column `createdAt` on the `User` table. All the data in the column will be lost.
-  - Added the required column `password` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `role` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `updated_at` to the `User` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('admin', 'user');
+CREATE TYPE "Role" AS ENUM ('admin', 'user', 'teacher');
 
 -- CreateEnum
 CREATE TYPE "Level" AS ENUM ('beginner', 'intermediate', 'advanced');
@@ -29,19 +19,32 @@ CREATE TYPE "PaymentStatus" AS ENUM ('pending', 'sukses', 'gagal', 'expired');
 -- CreateEnum
 CREATE TYPE "ProgressStatus" AS ENUM ('belum', 'sedang', 'selesai');
 
--- AlterTable
-ALTER TABLE "User" DROP CONSTRAINT "User_pkey",
-DROP COLUMN "createdAt",
-ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "deleted_at" TIMESTAMP(3),
-ADD COLUMN     "image" TEXT,
-ADD COLUMN     "password" TEXT NOT NULL,
-ADD COLUMN     "role" "Role" NOT NULL,
-ADD COLUMN     "updated_at" TIMESTAMP(3) NOT NULL,
-ALTER COLUMN "id" DROP DEFAULT,
-ALTER COLUMN "id" SET DATA TYPE TEXT,
-ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
-DROP SEQUENCE "User_id_seq";
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "image" TEXT,
+    "role" "Role" NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TeacherProfile" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "bio" TEXT,
+    "expertise" TEXT,
+    "social" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "TeacherProfile_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Course" (
@@ -52,7 +55,7 @@ CREATE TABLE "Course" (
     "category" TEXT NOT NULL,
     "price" INTEGER NOT NULL,
     "level" "Level" NOT NULL,
-    "thumbnail" TEXT NOT NULL,
+    "thumbnail" TEXT,
     "status" "CourseStatus" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -181,7 +184,16 @@ CREATE TABLE "Certificate" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TeacherProfile_user_id_key" ON "TeacherProfile"("user_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Payment_transaction_id_key" ON "Payment"("transaction_id");
+
+-- AddForeignKey
+ALTER TABLE "TeacherProfile" ADD CONSTRAINT "TeacherProfile_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Course" ADD CONSTRAINT "Course_made_by_fkey" FOREIGN KEY ("made_by") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

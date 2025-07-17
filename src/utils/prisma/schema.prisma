@@ -94,7 +94,7 @@ model Course {
   category          String
   price             Int
   level             Level
-  thumbnail         String
+  thumbnail         String?
   status            CourseStatus
   created_at        DateTime           @default(now())
   updated_at        DateTime           @updatedAt
