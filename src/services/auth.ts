@@ -47,7 +47,7 @@ export async function loginUser(email: string, password: string) {
 
 export async function verifyTokenAndUser(token: string) {
   const payload = verifyToken(token) as { id: string; role: Role }
-  const user = await authRepository.findUserByEmail(payload.id)
+  const user = await authRepository.findUserById(payload.id)
   if (!user) throw new HttpError(401, 'User tidak ditemukan')
   return user
 }
